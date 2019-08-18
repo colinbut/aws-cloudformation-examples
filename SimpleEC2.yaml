@@ -1,0 +1,13 @@
+Resources:
+  Ec2Instance:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: t2.micro
+      ImageId: ami-0b898040803850657
+      Tags:
+        - Key: Name
+          Value: WebServer01
+        - Key: Environment
+          Value: Dev
+        - Key: CreatedBy
+          Value: Colin

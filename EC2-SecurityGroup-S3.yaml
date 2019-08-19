@@ -7,19 +7,23 @@ Resources:
         - IpProtocol: tcp
           FromPort: '22'
           ToPort: '22'
-          Cidrlp: 0.0.0.0/0 # access from anywhere in the world
+          CidrIp: 0.0.0.0/0 # access from anywhere in the world
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
   WebServerEC2:
     Type: AWS::EC2::Instance
     Properties:
       InstanceType: t2.micro
-      ImageId: ami-0b898040803850657
+      ImageId: ami-0d8e27447ec2c8410 # EU (London)
       Tags:
         - Key: Name
           Value: WebServer01
   MyS3Bucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: CloudFormation-Bucket-ColinBut
+      BucketName: cloudformation-bucket-colinbut
       AccessControl: PublicRead
       WebsiteConfiguration:
         IndexDocument: Index.html

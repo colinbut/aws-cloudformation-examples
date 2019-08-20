@@ -1,0 +1,53 @@
+Parameters:
+  NameOfService:
+    Description: "The name of the service this stack is used for"
+    Type: String
+  KeyName:
+    Description: "The SSH KeyPair required for SSH access"
+    Type: AWS::EC2::KeyPair::KeyName
+Mappings:
+  RegionMap:
+    us-east-1: # N. Virginia
+      AMI: ami-0b898040803850657
+    us-west-1: # N. California
+      AMI: ami-056ee704806822732
+    eu-west-1: # Ireland
+      AMI: ami-0bbc25e23a7640b9b
+    eu-west-2: # London
+      AMI: ami-0d8e27447ec2c8410
+    ap-southeast-2: # Sydney
+      AMI: ami-0dc96254d5535925f
+Resources:
+  WebServerEC2:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: t2.micro
+      ImageId:
+        Fn::FindInMap:
+          - RegionMap
+          - !Ref AWS::Region
+          - AMI
+      Tags:
+        - Key: Name
+          Value: !Ref NameOfService
+        - Key: "Details"
+          Value: !Join
+            - ""
+            - - "EC2 Instance for "
+              - !Ref AWS::Region
+      SecurityGroups:
+        - !Ref WebDMZSecurityGroup
+      KeyName: !Ref KeyName
+  WebDMZSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Enable Web Access 
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: '22'
+          ToPort: '22'
+          CidrIp: 0.0.0.0/0 # access from anywhere in the world
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
